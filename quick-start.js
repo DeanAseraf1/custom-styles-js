@@ -1,4 +1,5 @@
-            //global-properties
+const customStyles = (function(){
+//global-properties
             const attributeName = "custom-style"
             const refAttributeName = "custom-style-ref"
             const stylesheetName = "custom-stylesheet"
@@ -140,3 +141,4 @@
             }
 
             return { updateCustomStyle, updateCustomStyles, addCustomRule, addCustomRules }
+})()
