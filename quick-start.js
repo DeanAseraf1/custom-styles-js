@@ -1,5 +1,3 @@
-const customStyles = (function() {
-
             //global-properties
             const attributeName = "custom-style"
             const refAttributeName = "custom-style-ref"
@@ -142,4 +140,3 @@ const customStyles = (function() {
             }
 
             return { updateCustomStyle, updateCustomStyles, addCustomRule, addCustomRules }
-        })()
