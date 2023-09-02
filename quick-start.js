@@ -1,4 +1,3 @@
-
             //global-properties
             const attributeName = "custom-style"
             const refAttributeName = "custom-style-ref"
