@@ -1,0 +1,18 @@
+{
+  "name": "custom-styles-js",
+  "version": "1.0.0",
+  "description": "A simple library to replace inline styles with CSS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeanAseraf1/custom-styles-js.git"
+  },
+  "keywords": [
+    "CustomStylesJS"
+  ],
+  "author": "Dean Yair Aseraf",
+  "license": "ISC"
+}
