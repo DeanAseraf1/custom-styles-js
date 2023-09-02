@@ -1,4 +1,5 @@
 const customStyles = (function(){
+'use strict';
 //global-properties
             const attributeName = "custom-style"
             const refAttributeName = "custom-style-ref"
