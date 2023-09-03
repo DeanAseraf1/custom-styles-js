@@ -28,13 +28,7 @@ For quickstart:
 <body>
     <main>
 
-        <!--Pros
-        1. Isn't using inline styles, evreything about the styles is defined in CSS
-        2. Allows reference creation to a specific style for reuse and update
-        3. Allows controlled rendering
-        4. Manages your styles (and references) with JS, automatic inject and replace in the DOM
-        5. All needed is to replace 'style' with 'custom-style' for simplest usement-->
-
+        <!--Examples-->
 
         <!--Default behavior creates new css style element-->
         <!--Simple usement 'custom-style' creates new css class in the custom-style with the value as properties-->
@@ -122,6 +116,7 @@ For quickstart:
         </div>
     </main>
     <script>
+        //Use this part to import all functionallity quickly
         const cs = new Promise(function (resolve, reject) {
             try {
                 var xhr = new XMLHttpRequest();
@@ -142,7 +137,7 @@ For quickstart:
 
         cs.then(customStyles => {
             //Your custom css style class updates
-            //For example
+            //Examples below
             customStyles.addCustomRule(
                 `@media screen and (min-width: 500px) {
                 [1] {
