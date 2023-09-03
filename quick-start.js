@@ -41,7 +41,6 @@
                 let cleanText = cssText.replaceAll(/(\s|\t|\n|\r)*/gim, "");
                 if(/\(\)(:|::)(\w|\s|\t|\n|\r)*{(.|\n)*}/gim.test(cleanText)){
                     let arr = cleanText.split(/(\(\)|\{|\})/gim)
-                    console.log(arr);
                     let pseudoProperties = [];
                     for(let i = 0; i<arr.length; i++){
                         if(arr[i] === "()"){
@@ -65,7 +64,6 @@
                             //pseudoProperties.push({pseudo: arr[i+1], properties: [...arr[i+3].split(";")]});
                         }
                     }
-                    console.log(pseudoProperties);
                     return pseudoProperties;
                 }
                 return [];
@@ -97,7 +95,6 @@
                         const pseudoObjects = updatePseudoRefencesInCSS(attributeValue);
                         for(let j = 0 ; j< pseudoObjects.length; j++){
                             const newRule = `.${newCssClassName}${pseudoObjects[j].pseudo} {\n\t${pseudoObjects[j].properties}\n}\n\n`
-                            console.log(newRule);
                             customStyleSheet.sheet.insertRule(newRule, customStyleSheet.sheet.cssRules.length)
                         }
                         //const newCssRule = `.${newCssClassName} {${attributeValue}\n}\n\n`
