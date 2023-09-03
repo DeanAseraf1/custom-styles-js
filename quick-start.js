@@ -1,5 +1,4 @@
-
-            //global-properties
+//global-properties
             const attributeName = "custom-style"
             const refAttributeName = "custom-style-ref"
             const stylesheetName = "custom-stylesheet"
@@ -38,6 +37,39 @@
                 }
                 return cssText;
             }
+            const updatePseudoRefencesInCSS = (cssText) => {
+                let cleanText = cssText.replaceAll(/(\s|\t|\n|\r)*/gim, "");
+                if(/\[\](:|::)(\w|\s|\t|\n|\r)*{(.|\n)*}/gim.test(cleanText)){
+                    let arr = cleanText.split(/(\[\]|\{|\})/gim)
+                    console.log(arr);
+                    let pseudoProperties = [];
+                    for(let i = 0; i<arr.length; i++){
+                        if(arr[i] === "[]"){
+                            let isDoubleColon = [
+                                "part", 
+                                "after", 
+                                "before", 
+                                "marker", 
+                                "slotted", 
+                                "backdrop", 
+                                "selection", 
+                                "first-line", 
+                                "placeholder", 
+                                "target-text",
+                                "first-letter", 
+                                "grammar-error", 
+                                "spelling-error", 
+                                "file-selector-button"
+                            ].includes(arr[i+1]);
+                            pseudoProperties.push({pseudo: arr[i+1], properties: arr[i+3], isDoubleColon: isDoubleColon});
+                            //pseudoProperties.push({pseudo: arr[i+1], properties: [...arr[i+3].split(";")]});
+                        }
+                    }
+                    console.log(pseudoProperties);
+                    return pseudoProperties;
+                }
+                return [];
+            }
 
             const customStyleSheet = (function(){
                 const customStyleSheet = document.createElement("style")
@@ -50,13 +82,7 @@
                     for(let i = 0; i < elements.length; i++){
                         const attributeValue = elements[i].getAttribute(attributeName)
                         const newCssClassName = `${attributeName}-${i}`
-                        const newCssRule = `.${newCssClassName} {${updateRefrencesInCSS(attributeValue)}\n}\n\n`
-                        //const newCssRule = `.${newCssClassName} {${attributeValue}\n}\n\n`
-                        //customStyleSheet.innerHTML += newCssRule
-                        customStyleSheet.sheet.insertRule(newCssRule, i)
-                        elements[i].removeAttribute(attributeName)
-                        elements[i].classList.add(newCssClassName)
-                        
+                        let isRef = false;
                         if(elements[i].hasAttribute(refAttributeName)){
                             const key = elements[i].getAttribute(refAttributeName)
                             const currentCustomStyleRef = getCustomStyleRef(key);
@@ -64,10 +90,25 @@
                                 console.warn(`custom-style-ref="${key} is already declared."\nPlease use different value.`)
                                 return
                             }
-                            
+                            isRef = true;
                             customStylesReferences.push({key: key, value: newCssClassName})
-                            elements[i].removeAttribute(refAttributeName)
                         }
+                        const newCssRule = `.${newCssClassName} {${updateRefrencesInCSS(attributeValue)}\n}\n\n`
+                        const pseudoObjects = updatePseudoRefencesInCSS(attributeValue);
+                        for(let j = 0 ; j< pseudoObjects.length; j++){
+                            const newRule = `.${newCssClassName}${pseudoObjects[j].pseudo} {\n\t${pseudoObjects[j].properties}\n}\n\n`
+                            console.log(newRule);
+                            customStyleSheet.sheet.insertRule(newRule, customStyleSheet.sheet.cssRules.length)
+                        }
+                        //const newCssRule = `.${newCssClassName} {${attributeValue}\n}\n\n`
+                        //customStyleSheet.innerHTML += newCssRule
+                        customStyleSheet.sheet.insertRule(newCssRule, customStyleSheet.sheet.cssRules.length)
+                        elements[i].removeAttribute(attributeName)
+                        elements[i].classList.add(newCssClassName)
+                        
+                        if(isRef)
+                            elements[i].removeAttribute(refAttributeName)
+                        
                     }
                 
                 //handaling custom-style-refs
