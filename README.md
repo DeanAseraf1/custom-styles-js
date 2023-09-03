@@ -371,4 +371,4 @@ npm i custom-styles-js
 
 ## License
 
-[ISC]([https://choosealicense.com/licenses/mit/](https://www.isc.org/licenses/)https://www.isc.org/licenses/)
+[ISC](https://www.isc.org/licenses/)
