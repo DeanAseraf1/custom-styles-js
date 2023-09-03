@@ -70,7 +70,7 @@ For quickstart:
         <h1 custom-style="
             color: blue;
             font-size: 20px;
-            [1]{
+            (1){
                 color: white;
             }">
             hello
@@ -94,7 +94,7 @@ For quickstart:
             <h1 custom-style-ref="3" custom-style="
             color: red;
             font-size: 30px;
-            []:hover{
+            ():hover{
                 color: pink;
             }">
                 hello
@@ -104,7 +104,7 @@ For quickstart:
             <div custom-style="
         color: blue;
         font-size: 20px;
-        [3]:hover{
+        (3):hover{
             color: white;
         }">
                 hello
@@ -140,7 +140,7 @@ For quickstart:
             //Examples below
             customStyles.addCustomRule(
                 `@media screen and (min-width: 500px) {
-                [1] {
+                (1) {
                     font-size: 20px;
                 }
             }`
@@ -154,11 +154,11 @@ For quickstart:
                 from {background-color: blue;}
                 to {background-color: yellow;}
             }`,
-                `[1] {
+                `(1) {
                 animation-name: example;
                 animation-duration: 4s;
             }`,
-                `[2] {
+                `(2) {
                 animation-name: example2;
                 animation-duration: 4s;
 
