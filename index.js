@@ -33,20 +33,20 @@ const customStyles = (function() {
             const updateRefrencesInCSS = (cssText) =>{
                 for(let i = 0; i< customStylesReferences.length; i++){
                     const currentCustomStyleRef = getCustomStyleRef(customStylesReferences[i].key)
-                    if(cssText.includes(`[${currentCustomStyleRef.key}]`)){
-                        cssText = cssText.replaceAll(`[${currentCustomStyleRef.key}]`, `.${currentCustomStyleRef.value}`)
+                    if(cssText.includes(`(${currentCustomStyleRef.key})`)){
+                        cssText = cssText.replaceAll(`(${currentCustomStyleRef.key})`, `.${currentCustomStyleRef.value}`)
                     }
                 }
                 return cssText;
             }
             const updatePseudoRefencesInCSS = (cssText) => {
                 let cleanText = cssText.replaceAll(/(\s|\t|\n|\r)*/gim, "");
-                if(/\[\](:|::)(\w|\s|\t|\n|\r)*{(.|\n)*}/gim.test(cleanText)){
-                    let arr = cleanText.split(/(\[\]|\{|\})/gim)
+                if(/\(\)(:|::)(\w|\s|\t|\n|\r)*{(.|\n)*}/gim.test(cleanText)){
+                    let arr = cleanText.split(/(\(\)|\{|\})/gim)
                     console.log(arr);
                     let pseudoProperties = [];
                     for(let i = 0; i<arr.length; i++){
-                        if(arr[i] === "[]"){
+                        if(arr[i] === "()"){
                             let isDoubleColon = [
                                 "part", 
                                 "after", 
@@ -80,7 +80,7 @@ const customStyles = (function() {
 
                 //handaling main custom-styles
                 const elements = document.querySelectorAll(`[${attributeName}]`)
-                    clearWordRegex = /[\s]+/g
+                    //clearWordRegex = /[\s]+/g
                     for(let i = 0; i < elements.length; i++){
                         const attributeValue = elements[i].getAttribute(attributeName)
                         const newCssClassName = `${attributeName}-${i}`
