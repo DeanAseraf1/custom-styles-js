@@ -12,6 +12,52 @@ npm i custom-styles-js
 ```
 
 ## Usage
+
+For quickstart use:
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1 custom-style="
+    background-color: yellow;
+    color: grey;">asdadaasd</h1>
+    <script>
+        const cs = new Promise(function (resolve, reject) {
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://raw.githubusercontent.com/DeanAseraf1/custom-styles-js/main/quick-start.js');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        let func = new Function(xhr.responseText);
+                        let result = func();
+                        resolve(result)
+                    }
+                };
+                xhr.send(null);
+            }
+            catch (e){
+                reject(e);
+            }
+            });
+
+        cs.then((r)=>{
+            //Your custom css style class updates
+        })
+
+    </script>
+</body>
+
+</html>
+```
+
+Usage example
 ```html
 <!DOCTYPE html>
 <html lang="en">
