@@ -30,15 +30,15 @@ For quickstart:
 
         <!--Examples-->
 
-        <!--Default behavior creates new css style element-->
-        <!--Simple usement 'custom-style' creates new css class in the custom-style with the value as properties-->
+        <!--Default behavior creates new css style element 'custom-style'-->
+        <!--Simple usage of 'custom-style' attribute - creates new css class in the custom-style with the value as properties-->
         <div custom-style="
             background-color: yellow;
             color: grey;">
             asdasd
         </div>
 
-        <!--'custom-style-ref' creates a reference for the custom css style class for future usement(another class use or post-update)-->
+        <!--'custom-style-ref' creates a reference for the custom css style class for future usage(another class reference or post-definition-update)-->
         <h1 custom-style-ref="1" custom-style="
             color: red;
             font-size: 30px;">
@@ -50,12 +50,12 @@ For quickstart:
             hello
         </h1>
 
-        <!--'custom-style-ref' with this value is already defined, uses the custom css style class instead-->
+        <!--if 'custom-style-ref' with the same value is already defined, uses the custom css style class instead(if overriden after definition then throws an error)-->
         <h1 custom-style-ref="1">
             hello
         </h1>
 
-        <!--css class definition in 'custom-style' attribute-->
+        <!--css class definition(for example, also ) in 'custom-style' attribute-->
         <div custom-style="
             background-color: yellow;
             color: grey;
