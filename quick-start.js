@@ -44,23 +44,7 @@
                     let pseudoProperties = [];
                     for(let i = 0; i<arr.length; i++){
                         if(arr[i] === "()"){
-                            let isDoubleColon = [
-                                "part", 
-                                "after", 
-                                "before", 
-                                "marker", 
-                                "slotted", 
-                                "backdrop", 
-                                "selection", 
-                                "first-line", 
-                                "placeholder", 
-                                "target-text",
-                                "first-letter", 
-                                "grammar-error", 
-                                "spelling-error", 
-                                "file-selector-button"
-                            ].includes(arr[i+1]);
-                            pseudoProperties.push({pseudo: arr[i+1], properties: arr[i+3], isDoubleColon: isDoubleColon});
+                            pseudoProperties.push({pseudo: arr[i+1], properties: arr[i+3]});
                             //pseudoProperties.push({pseudo: arr[i+1], properties: [...arr[i+3].split(";")]});
                         }
                     }
