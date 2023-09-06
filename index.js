@@ -1,13 +1,22 @@
 const customStyles = (function () {
 
             //global variables
-            const attributeName = "custom-style"
-            const refAttributeName = "custom-style-ref"
-            const stylesheetName = "custom-stylesheet"
+            const attributeName = "data-style"
+            const srcAttributeName = "data-style-src"
+            const refAttributeName = "data-style-ref"
+            const stylesheetName = "data-stylesheet"
             const customStylesReferences = []
 
+            const styleName = "style"
+            const srcName = "styleSrc"
+            const refName = "styleRef"
+
+            //const getAttributeName = (names) => names.join("-")
+            //const getUpperCapital = (name, index) => index == 0 ? (name.toLowerCase()) : (name.charAt(0).toUpperCase() + name.slice(1).toLowerCase());
+            //const getDataName = (names) => {let res = ""; names.forEach((name, index) => res += getUpperCapital(name, index)); return res;}
+
             //in-function for getting a reference element from the array by key.
-            const getCustomStyleRef = (key) => {
+            const getCustomStyleRef = (key) => { 
                 const currentCustomStyleRef = customStylesReferences.find(item => item.key === key)
                 if (!currentCustomStyleRef)
                     return null
@@ -43,17 +52,16 @@ const customStyles = (function () {
 
             //in-function for handaling pseudo syntax
             const updatePseudoRefencesInCSS = (cssText) => {
-                const cleanText = cssText.replaceAll(/(\s|\t|\n|\r)*/gim, "");
-                if (/\(\)(:|::)(\w|\s|\t|\n|\r)*{(.|\n)*}/gim.test(cleanText)) {
-                    let arr = cleanText.split(/(\(\)|\{|\})/gim)
+                if (/\~(:|::)(\w|\s|\t|\n|\r)*{(.|\n)*}/gim.test(cssText)) {
+                    let arr = cssText.split(/(\~|\{|\})/gim)
                     let pseudoProperties = [];
                     for (let i = 0; i < arr.length; i++) {
-                        if (arr[i] === "()") 
+                        if (arr[i] === "~") 
                             pseudoProperties.push({ pseudo: arr[i + 1], properties: arr[i + 3] });
                     }
-                    return pseudoProperties;
+                    return {"pseudoProperties": pseudoProperties, "newCss": cssText.replaceAll(/\~(:|::)(\w|\s|\t|\n|\r)*{(.|\n)*}/gim, "")};
                 }
-                return [];
+                return {pseudoProperties: [], newCss: cssText};
             }
 
             //in-function(single-use) for creating the custom style sheet
@@ -66,23 +74,34 @@ const customStyles = (function () {
                 //handaling main custom-styles
                 const elements = document.querySelectorAll(`[${attributeName}]`)
                 for (let i = 0; i < elements.length; i++) {
-                    const attributeValue = elements[i].getAttribute(attributeName)
+                    const attributeValue = elements[i].dataset[styleName]
                     const newCssClassName = `${attributeName}-${i}`
 
                     //checking ref
                     let isRef = false;
-                    if (elements[i].hasAttribute(refAttributeName)) {
-                        const key = elements[i].getAttribute(refAttributeName)
+                    if (srcName in elements[i].dataset) {
+                        const key = elements[i].dataset[srcName]
                         const currentCustomStyleRef = getCustomStyleRef(key);
-                        if (currentCustomStyleRef) 
-                            elements[i].classList.add(currentCustomStyleRef.value);
-
+                        if (currentCustomStyleRef)
+                            console.warn(`custom-style-ref="${key} is already declared."\nPlease use different value.`)
+                        
                         isRef = true;
                         customStylesReferences.push({ key: key, value: newCssClassName })
                     }
+                    
+                    let isCopy = false;
+                    if(refName in elements[i].dataset){
+                        const key = elements[i].dataset[refName]
+                        const currentCustomStyleRef = getCustomStyleRef(key);
+                        if (currentCustomStyleRef)
+                            elements[i].classList.add(currentCustomStyleRef.value);
+
+                            isCopy = true;
+                    }
 
                     //handaling pseudo elements
-                    const pseudoObjects = updatePseudoRefencesInCSS(attributeValue);
+                    const pseudoUpdates = updatePseudoRefencesInCSS(attributeValue)
+                    const pseudoObjects = pseudoUpdates.pseudoProperties;
                     for (let j = 0; j < pseudoObjects.length; j++) 
                         customStyleSheet.sheet.insertRule(
                             `.${newCssClassName}${pseudoObjects[j].pseudo} {\n\t${pseudoObjects[j].properties}\n}\n\n`,
@@ -90,20 +109,22 @@ const customStyles = (function () {
                      
                     //inserting the main rule
                     customStyleSheet.sheet.insertRule(
-                        `.${newCssClassName} {${updateRefrencesInCSS(attributeValue)}\n}\n\n`,
+                        `.${newCssClassName} {${updateRefrencesInCSS(pseudoUpdates.newCss)}\n}\n\n`,
                         customStyleSheet.sheet.cssRules.length)
 
                     elements[i].removeAttribute(attributeName)
                     elements[i].classList.add(newCssClassName)
 
                     if (isRef)
-                        elements[i].removeAttribute(refAttributeName)
+                        elements[i].removeAttribute(srcAttributeName)
+                    if(isCopy)
+                        elements[i].removeAttribute(refAttributeName);
                 }
 
                 //handaling custom-style-refs
                 const referenceElements = document.querySelectorAll(`[${refAttributeName}]`)
                 for (let i = 0; i < referenceElements.length; i++) {
-                    customStyleRef = referenceElements[i].getAttribute(refAttributeName)
+                    customStyleRef = referenceElements[i].dataset[refName]
                     const customStyle = getCustomStyleRef(customStyleRef)
                     if (!customStyle) {
                         console.warn(`custom-style-ref="${customStyleRef}" is not defined.\nTry adding it to the refered element.\nAnd check that it uses a custom-style attribute.`)
