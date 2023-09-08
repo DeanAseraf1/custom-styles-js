@@ -291,7 +291,7 @@ useCustomStyles();//using the hook (at the top of App functions body)
 ```jsx
   // 'data-style' attribute => creates a new css class and assigns it to the element(same syntax as style).
   // 'data-style-src' attribute => creates a new source to the css class named as the value of the attribute(used with ref in a single file).
-  // ''data-style-ref` attribute => reference a source and applys all styling to the element (used with src in a single file)
+  // 'data-style-ref' attribute => reference a source and applys all styling to the element (used with src in a single file)
   const colors = ["green", "yellow", "red", "blue", "orange"];
   const lines = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
