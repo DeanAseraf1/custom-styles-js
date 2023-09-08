@@ -116,18 +116,18 @@ Quickstart example(html):
 
 Usage in React JS
 
-1. create new file 'customStyles.jsx'(copy&paste):
+1. Create new file 'customStyles.jsx'(copy & paste):
 
 ```jsx
 import { useEffect } from "react"
 
-export const useCustomStyles = ()=>{
+export const useCustomStyles = () => {
     useEffect(()=>{
         customStyles();
     },[])
 }
 
-const customStyles = function () {
+const customStyles = () => {
     //global variables
     const attributeName = "data-style"
     const srcAttributeName = "data-style-src"
@@ -276,7 +276,7 @@ const customStyles = function () {
   }
 ```
 
-2. insert into 'App.jsx'(copy & paste):
+2. Insert into 'App.jsx' (copy & paste):
 
 ```jsx
 //...
@@ -286,7 +286,7 @@ useCustomStyles();//using the hook (at the top of App functions body)
 //...
 ```
 
-3. apply in your components(example):
+3. Apply in your components (examples):
 
 ```jsx
   const colors = ["green", "yellow", "red", "blue", "orange"];
