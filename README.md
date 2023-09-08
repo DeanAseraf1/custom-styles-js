@@ -114,11 +114,18 @@ Quickstart example(html):
 </html>
 ```
 
-Usage in React JS(create react file 'customStyles.jsx):
+Usage in React JS(create new file 'customStyles.jsx'):
 
 ```jsx
-export const customStyles = function () {
+import { useEffect } from "react"
 
+export const useCustomStyles = ()=>{
+    useEffect(()=>{
+        customStyles();
+    },[])
+}
+
+const customStyles = function () {
     //global variables
     const attributeName = "data-style"
     const srcAttributeName = "data-style-src"
@@ -138,10 +145,6 @@ export const customStyles = function () {
     const getNewCssClassName = (...names) => names.join("-");
     const getRefSyntax = (ref) => `(${ref})`
     const getRefCssClass = (ref) => `.${ref}`
-  
-    //const getAttributeName = (names) => names.join("-")
-    //const getUpperCapital = (name, index) => index == 0 ? (name.toLowerCase()) : (name.charAt(0).toUpperCase() + name.slice(1).toLowerCase());
-    //const getDataName = (names) => {let res = ""; names.forEach((name, index) => res += getUpperCapital(name, index)); return res;}
   
     //in-function for getting a reference element from the array by key.
     const getCustomStyleRef = (key) => { 
@@ -170,7 +173,7 @@ export const customStyles = function () {
   
     //in-function for replace all the '(ref)' syntax with the correct class names in the cssText
     const updateRefrencesInCSS = (cssText) => {
-      
+      console.log(cssText);
         for (let i = 0; i < customStylesReferences.length; i++) {
             const currentCustomStyleRef = getCustomStyleRef(customStylesReferences[i].key)
             const refName = getRefSyntax(currentCustomStyleRef.key)
@@ -268,81 +271,19 @@ export const customStyles = function () {
   
         return customStyleSheet
     })()
-  
-    //global functions
-    //post-render custom-style update
-    /**
-     * This function updates a specific custom class thats refered with
-     * the custom-style-ref attribure value.
-     * @param customStyleRef Defined custom-style-sheet-ref attribute value(string).
-     * @param propertyKey Property name to set on the custom-style(string).
-     * @param propertyValue Property value to set on the custom-style(string).
-     */
-    const updateCustomStyle = (customStyleRef, propertyKey, propertyValue) => {
-        const customRule = getCustomStylesheetRule(customStyleRef)
-        if (!customRule)
-            return;
-  
-        customRule.style.setProperty(propertyKey, propertyValue)
-    }
-  
-    //post-render custom-style update
-    /**
-     * This function updated multiple custom class thats refered with
-     * the custom-style-ref attribute values.
-     * @param customStylesObject Object with all updated custom properties(object).
-     */
-    const updateCustomStyles = (customStylesObject) => {
-        const objectKeys = Object.keys(customStylesObject)
-        for (let i = 0; i < objectKeys.length; i++) {
-            const currentDefinition = Object.values(customStylesObject)[i]
-            const currentKeys = Object.keys(currentDefinition)
-            for (let j = 0; j < currentKeys.length; j++) {
-                const key = currentKeys[j]
-                const value = Object.values(currentDefinition)[j]
-                updateCustomStyle(objectKeys[i], key, value)
-            }
-        }
-    }
-  
-    //post-render add custom rule
-    /**
-     * This function adds a rule to the custom stylesheet.
-     * @param rule Rule to add to the custom stylesheet(string).
-     * Use (ref) to specify a custom-style-ref.
-     */
-    const addCustomRule = (rule) => {
-        customStyleSheet.sheet.insertRule(updateRefrencesInCSS(rule), customStyleSheet.sheet.cssRules.length)
-    }
-  
-    //post-render add custom rules
-    /**
-     * This function adds multiple rules to the custom stylesheet.
-     * @param rules Rules to add to the custom stylesheet(string[]).
-     * Use (ref) to specify a custom-style-ref.
-     */
-    const addCustomRules = (...rules) => {
-        for (let i = 0; i < rules.length; i++) {
-            addCustomRule(rules[i]);
-        }
-    }
-  
-    return { updateCustomStyle, updateCustomStyles, addCustomRule, addCustomRules }
   }
 ```
 
-Usage in React JS(apply in App.jsx):
+Usage in React JS('App.jsx'):
 
 ```jsx
-useEffect(() => {
-    customStyles();
-  }, []);
+useCustomStyles();
 ```
 
 Usage in React JS(apply in components):
 
 ```jsx
-const colors = ["green", "yellow", "red", "blue", "orange"];
+  const colors = ["green", "yellow", "red", "blue", "orange"];
   const lines = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
   return (
@@ -351,11 +292,11 @@ const colors = ["green", "yellow", "red", "blue", "orange"];
       Inline styles
       {lines.map((line, index) => {
         return (
-        <div
-          key={index}
-          style={{ backgroundColor: colors[index % colors.length] }}>
-          {line}
-        </div>
+          <div
+            key={index}
+            style={{ backgroundColor: colors[index % colors.length] }}>
+            {line}
+          </div>
         )
       })}
 
@@ -373,9 +314,10 @@ const colors = ["green", "yellow", "red", "blue", "orange"];
 
       <br />
 
-      Custom style ref & src5
-      <div data-style={`color:blue;~:hover{color:white};`} data-style-src={"test"}>hello1</div>
-      <div data-style-ref={"test"}>hello2</div>
+      Custom style ref & src
+      <div data-style-src="test" data-style="color:blue;~:hover{color:white};">hello1</div>
+      <div data-style-ref="test">hello2</div>
+      <div data-style-ref="test" data-style="color:green;">hello3</div>
 
     </div>
   );
