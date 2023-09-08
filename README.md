@@ -121,10 +121,11 @@ Usage in React
 ```jsx
 import { useEffect } from "react"
 
-export const useCustomStyles = () => {
+export const useCustomStyles = ()=>{
     useEffect(()=>{
         customStyles();
-    },[])
+        console.log("!");
+    })
 }
 
 const customStyles = () => {
@@ -140,7 +141,7 @@ const customStyles = () => {
     const refName = "styleRef"
   
     const pseudoSyntax = "~"
-    const pseudoRegex = () => new RegExp(`${pseudoSyntax}(:|::)(\\w|\\s|\\t|\\n|\\r)*{(.|\\n)*}`, "gim")
+    const pseudoRegex = () => new RegExp(`${pseudoSyntax}(:|::)(\\w|\\s|\\t|\\n|\\r)*{(.|\\s|\\t|\\n|\\r)*}`, "gim")
     const pseudoBracketsRegex = () => new RegExp(`(\\${pseudoSyntax}|\\{|\\})`,"gim")
   
     const getNewCssClass = (className, classContent) => `.${className} {\n\t${classContent}\n}\n\n`
@@ -175,7 +176,6 @@ const customStyles = () => {
   
     //in-function for replace all the '(ref)' syntax with the correct class names in the cssText
     const updateRefrencesInCSS = (cssText) => {
-      console.log(cssText);
         for (let i = 0; i < customStylesReferences.length; i++) {
             const currentCustomStyleRef = getCustomStyleRef(customStylesReferences[i].key)
             const refName = getRefSyntax(currentCustomStyleRef.key)
@@ -286,9 +286,15 @@ useCustomStyles();//using the hook (at the top of App functions body)
 //...
 ```
 
-3. Apply in your components (examples):
+3. Apply in your components (component example):
 
 ```jsx
+
+
+
+import { useEffect, useRef, useState } from "react";
+import styles from "./Home.module.css";
+
 
   // 'data-style' attribute => creates a new css class and assigns it to the element(same syntax as style).
   // use the `~` synatx to style pseudo elements with pseudo element selectors.
@@ -297,43 +303,84 @@ useCustomStyles();//using the hook (at the top of App functions body)
   // 'data-style-ref' attribute => reference a source and adds the css class to the element (used with src in a single file).
   // its possible to use 'data-style-ref' and override some of the styles with 'data-style'
 
-  const colors = ["green", "yellow", "red", "blue", "orange"];
-  const lines = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-  return (
-    <div>
-      <Home />
-      Inline styles
-      {lines.map((line, index) => {
-        return (
-          <div
-            key={index}
-            style={{ backgroundColor: colors[index % colors.length] }}>
-            {line}
-          </div>
-        )
-      })}
+export const Home = () => {
+    const colors = ["green", "yellow", "red", "blue", "orange"];
+    const lines = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    return (
+        <>
+            {
+            //<div ref={ref} className={styles.comp}>lalalala</div>
 
-      <br />
-      Custom styles
-      {lines.map((line, index) => {
-        return <div
-          key={index + lines.length}
-          data-style={`
-        background-color: ${colors[index % colors.length]};
-         color:${colors[(index + 1) % colors.length]};`}>
-          {line}
-        </div>
-      })}
+            //<div className={styles.comp}>lalalala</div>
+            }
 
-      <br />
+            Inline styles
+            {lines.map((line, index) => {
+                return (
+                    <div
+                        key={index}
+                        style={{ 
+                        backgroundColor: colors[index % colors.length], 
+                        color: colors[(index + 1) % colors.length]}}>
+                        {line}
+                    </div>
+                )
+            })}
 
-      Custom style ref & src
-      <div data-style-src="test" data-style="color:blue;~:hover{color:white};">hello1</div>
-      <div data-style-ref="test">hello2</div>
-      <div data-style-ref="test" data-style="color:green;">hello3</div>
-      <div data-style-ref="test" data-style="~:hover{color:pink};">hello4</div>
-      <div data-style-ref="test" data-style="@media screen and (max-width: 600px){font-size: 60px;}">hello5</div>
-    </div>
-  );
+            Custom styles
+            {lines.map((line, index) => {
+                return (
+                <div
+                    key={index + lines.length}
+                    data-style={`
+                    background-color: ${colors[index % colors.length]};
+                    color:${colors[(index + 1) % colors.length]};`}>
+                    {line}
+                </div>)
+            })}
+
+            Custom style ref & src
+            <div
+                data-style-src="test"
+                data-style="
+                color:blue;
+                ~:hover{
+                    color:white
+                }
+                ">
+                hello1
+            </div>
+
+            <div
+                data-style-ref="test">
+                hello2
+            </div>
+
+            <div
+                data-style-ref="test"
+                data-style="color:green;">
+                hello3
+            </div>
+
+            <div
+                data-style-ref="test"
+                data-style="~:hover{
+                    color:pink;
+                    }">
+                hello4
+            </div>
+
+            <div
+                data-style-ref="test"
+                data-style="
+                @media screen and (max-width: 600px){
+                    font-size: 30px;
+                }">
+                hello5
+            </div>
+
+        </>
+    );
+}
 ```
