@@ -289,9 +289,13 @@ useCustomStyles();//using the hook (at the top of App functions body)
 3. Apply in your components (examples):
 
 ```jsx
+
   // 'data-style' attribute => creates a new css class and assigns it to the element(same syntax as style).
+  // use the `~` synatx to style pseudo elements with pseudo element selectors.
+  //use the "@" synatx to create media queries on the element.
   // 'data-style-src' attribute => creates a new source to the css class named as the value of the attribute(used with ref in a single file).
-  // 'data-style-ref' attribute => reference a source and applys all styling to the element (used with src in a single file)
+  // 'data-style-ref' attribute => reference a source and applys all styling to the element (used with src in a single file).
+
   const colors = ["green", "yellow", "red", "blue", "orange"];
   const lines = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
@@ -327,7 +331,7 @@ useCustomStyles();//using the hook (at the top of App functions body)
       <div data-style-src="test" data-style="color:blue;~:hover{color:white};">hello1</div>
       <div data-style-ref="test">hello2</div>
       <div data-style-ref="test" data-style="color:green;">hello3</div>
-
+      <div data-style-ref="test" data-style="@media screen and (max-width: 600px){font-size: 60px;}">hello4</div>
     </div>
   );
 ```
