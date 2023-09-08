@@ -320,7 +320,7 @@ useCustomStyles();//using the hook (at the top of App functions body)
           key={index + lines.length}
           data-style={`
         background-color: ${colors[index % colors.length]};
-         ~:hover{color:${colors[(index + 1) % colors.length]}}`}>
+         color:${colors[(index + 1) % colors.length]};`}>
           {line}
         </div>
       })}
