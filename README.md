@@ -116,7 +116,7 @@ Quickstart example(html):
 
 Usage in React JS
 
-1.create new file 'customStyles.jsx'(copy&paste):
+1. create new file 'customStyles.jsx'(copy&paste):
 
 ```jsx
 import { useEffect } from "react"
@@ -276,14 +276,14 @@ const customStyles = function () {
   }
 ```
 
-2. insert into 'App.jsx'(copy&paste):
+2. insert into 'App.jsx'(copy & paste):
 
 ```jsx
-...
+//...
 import { useCustomStyles } from 'your/path/to/customStyles.jsx';//importing the hook
-...
+//...
 useCustomStyles();//using the hook (at the top of App functions body)
-...
+//...
 ```
 
 3. apply in your components(example):
