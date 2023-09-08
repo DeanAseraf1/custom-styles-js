@@ -290,12 +290,6 @@ useCustomStyles();//using the hook (at the top of App functions body)
 
 ```jsx
 
-
-
-import { useEffect, useRef, useState } from "react";
-import styles from "./Home.module.css";
-
-
   // 'data-style' attribute => creates a new css class and assigns it to the element(same syntax as style).
   // use the `~` synatx to style pseudo elements with pseudo element selectors.
   // use the "@" synatx to create media queries on the element.
