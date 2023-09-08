@@ -114,9 +114,9 @@ Quickstart example(html):
 </html>
 ```
 
-Usage in React JS
+Usage in React
 
-1. Create new file 'customStyles.jsx'(copy & paste):
+1. Create new file 'useCustomStyles.jsx'(copy & paste):
 
 ```jsx
 import { useEffect } from "react"
@@ -280,7 +280,7 @@ const customStyles = () => {
 
 ```jsx
 //...
-import { useCustomStyles } from 'your/path/to/customStyles.jsx';//importing the hook
+import { useCustomStyles } from 'your/path/to/useCustomStyles.jsx';//importing the hook
 //...
 useCustomStyles();//using the hook (at the top of App functions body)
 //...
@@ -292,9 +292,10 @@ useCustomStyles();//using the hook (at the top of App functions body)
 
   // 'data-style' attribute => creates a new css class and assigns it to the element(same syntax as style).
   // use the `~` synatx to style pseudo elements with pseudo element selectors.
-  //use the "@" synatx to create media queries on the element.
+  // use the "@" synatx to create media queries on the element.
   // 'data-style-src' attribute => creates a new source to the css class named as the value of the attribute(used with ref in a single file).
-  // 'data-style-ref' attribute => reference a source and applys all styling to the element (used with src in a single file).
+  // 'data-style-ref' attribute => reference a source and adds the css class to the element (used with src in a single file).
+  // its possible to use 'data-style-ref' and override some of the styles with 'data-style'
 
   const colors = ["green", "yellow", "red", "blue", "orange"];
   const lines = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
