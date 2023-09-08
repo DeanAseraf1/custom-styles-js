@@ -331,7 +331,8 @@ useCustomStyles();//using the hook (at the top of App functions body)
       <div data-style-src="test" data-style="color:blue;~:hover{color:white};">hello1</div>
       <div data-style-ref="test">hello2</div>
       <div data-style-ref="test" data-style="color:green;">hello3</div>
-      <div data-style-ref="test" data-style="@media screen and (max-width: 600px){font-size: 60px;}">hello4</div>
+      <div data-style-ref="test" data-style="~:hover{color:pink};">hello4</div>
+      <div data-style-ref="test" data-style="@media screen and (max-width: 600px){font-size: 60px;}">hello5</div>
     </div>
   );
 ```
