@@ -114,7 +114,9 @@ Quickstart example(html):
 </html>
 ```
 
-Usage in React JS(create new file 'customStyles.jsx'):
+Usage in React JS
+
+1.create new file 'customStyles.jsx'(copy&paste):
 
 ```jsx
 import { useEffect } from "react"
@@ -274,13 +276,17 @@ const customStyles = function () {
   }
 ```
 
-Usage in React JS('App.jsx'):
+2. insert into 'App.jsx'(copy&paste):
 
 ```jsx
-useCustomStyles();
+...
+import { useCustomStyles } from 'your/path/to/customStyles.jsx';//importing the hook
+...
+useCustomStyles();//using the hook (at the top of App functions body)
+...
 ```
 
-Usage in React JS(apply in components):
+3. apply in your components(example):
 
 ```jsx
   const colors = ["green", "yellow", "red", "blue", "orange"];
