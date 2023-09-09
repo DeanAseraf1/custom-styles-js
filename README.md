@@ -285,7 +285,7 @@ useCustomStylesheet();//using the hook (at the top of App functions body)
   // its possible to use 'data-style-ref' and override some of the styles with 'data-style'
 
 
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { useCustomStylesRef } from "your/path/to/useCustomStyles.jsx";
 
 export const Home = () => {
