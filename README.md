@@ -119,170 +119,157 @@ Usage in React
 1. Create new file 'useCustomStyles.jsx'(copy & paste):
 
 ```jsx
-import { useEffect } from "react"
 
-export const useCustomStyles = ()=>{
-    useEffect(()=>{
-        customStyles();
-        console.log("!");
-    })
+import { useRef } from "react"
+
+let customStyleSheet;
+
+export const useCustomStylesheet = () => {
+    if (!document.querySelector("#custom-stylesheet")) {
+        customStyleSheet = document.createElement("style")
+        customStyleSheet.setAttribute("id", "custom-stylesheet")
+        document.head.appendChild(customStyleSheet)
+    }
 }
 
-const customStyles = () => {
-    //global variables
+export const useCustomStylesRef = () => {
+    const refs = useRef([]);
     const attributeName = "data-style"
     const srcAttributeName = "data-style-src"
     const refAttributeName = "data-style-ref"
-    const stylesheetName = "data-stylesheet"
     const customStylesReferences = []
-  
+
     const styleName = "style"
     const srcName = "styleSrc"
     const refName = "styleRef"
-  
+
     const pseudoSyntax = "~"
     const pseudoRegex = () => new RegExp(`${pseudoSyntax}(:|::)(\\w|\\s|\\t|\\n|\\r)*{(.|\\s|\\t|\\n|\\r)*}`, "gim")
-    const pseudoBracketsRegex = () => new RegExp(`(\\${pseudoSyntax}|\\{|\\})`,"gim")
-  
+    const pseudoBracketsRegex = () => new RegExp(`(\\${pseudoSyntax}|\\{|\\})`, "gim")
+
     const getNewCssClass = (className, classContent) => `.${className} {\n\t${classContent}\n}\n\n`
     const getNewCssClassName = (...names) => names.join("-");
     const getRefSyntax = (ref) => `(${ref})`
     const getRefCssClass = (ref) => `.${ref}`
-  
+
+
     //in-function for getting a reference element from the array by key.
-    const getCustomStyleRef = (key) => { 
+    const getCustomStyleRef = (key) => {
         const currentCustomStyleRef = customStylesReferences.find(item => item.key === key)
         if (!currentCustomStyleRef)
             return null
-  
+
         return currentCustomStyleRef;
     }
-  
-    //in-function for getting a specific rule from the CSS by reference-key.
-    const getCustomStylesheetRule = (customStyleRef) => {
-        const currentCustomStyleRef = getCustomStyleRef(customStyleRef)
-        if (!currentCustomStyleRef) {
-            console.warn(`custom-style-ref="${customStyleRef}" is not defined.\nTry adding it to the refered element.`)
-            return null;
-        }
-  
-        const customSheetRule = [...customStyleSheet.sheet.cssRules].find(item => item.selectorText === getRefCssClass(currentCustomStyleRef.value))
-        if (!customSheetRule) {
-            console.warn(`The css class ".${currentCustomStyleRef.value}" wasn't found.\nAre you sure you added a proper reference?`)
-            return null;
-        }
-        return customSheetRule;
-    }
-  
+
     //in-function for replace all the '(ref)' syntax with the correct class names in the cssText
     const updateRefrencesInCSS = (cssText) => {
         for (let i = 0; i < customStylesReferences.length; i++) {
             const currentCustomStyleRef = getCustomStyleRef(customStylesReferences[i].key)
             const refName = getRefSyntax(currentCustomStyleRef.key)
-            if (cssText.includes(refName)) 
+            if (cssText.includes(refName))
                 cssText = cssText.replaceAll(refName, getRefCssClass(currentCustomStyleRef.value))
         }
         return cssText;
     }
-  
+
     //in-function for handaling pseudo syntax
     const updatePseudoRefencesInCSS = (cssText) => {
         if (pseudoRegex().test(cssText)) {
             let arr = cssText.split(pseudoBracketsRegex())
             let pseudoProperties = [];
             for (let i = 0; i < arr.length; i++) {
-                if (arr[i] === pseudoSyntax) 
+                if (arr[i] === pseudoSyntax)
                     pseudoProperties.push({ pseudo: arr[i + 1], properties: arr[i + 3] });
             }
-            return {pseudoProperties: pseudoProperties, newCss: cssText.replaceAll(pseudoBracketsRegex(), "")};
+            return { pseudoProperties: pseudoProperties, newCss: cssText.replaceAll(pseudoBracketsRegex(), "") };
         }
-        return {pseudoProperties: [], newCss: cssText};
+        return { pseudoProperties: [], newCss: cssText };
     }
-  
-    //in-function(single-use) for creating the custom style sheet
-    const customStyleSheet = (function () {
-        //Creating the style element
-        const customStyleSheet = document.createElement("style")
-        customStyleSheet.setAttribute("id", stylesheetName)
-        document.head.appendChild(customStyleSheet)
-  
-        //handaling main custom-styles
-        const elements = document.querySelectorAll(`[${attributeName}]`)
-        for (let i = 0; i < elements.length; i++) {
-            const attributeValue = elements[i].dataset[styleName]
-            const newCssClassName = getNewCssClassName(attributeName, i)
-  
-            //checking ref
-            let isRef = false;
-            if (srcName in elements[i].dataset) {
-                const key = elements[i].dataset[srcName]
-                const currentCustomStyleRef = getCustomStyleRef(key);
-                if (currentCustomStyleRef)
-                    console.warn(`custom-style-ref="${key} is already declared."\nPlease use different value.`)
-                
-                isRef = true;
-                customStylesReferences.push({ key: key, value: newCssClassName })
-            }
-            
-            let isCopy = false;
-            if(refName in elements[i].dataset){
-                const key = elements[i].dataset[refName]
-                const currentCustomStyleRef = getCustomStyleRef(key);
-                if (currentCustomStyleRef)
-                    elements[i].classList.add(currentCustomStyleRef.value);
-  
+
+    const refHandler = (ref) => {
+        if (ref && !refs.current.includes(ref)) {
+            refs.current.push(ref)
+
+            if (ref.hasAttribute(attributeName)) {
+                const attributeValue = ref.dataset[styleName]
+                const newCssClassName = getNewCssClassName(attributeName, refs.current.length - 1);
+
+                //checking ref
+                let isRef = false;
+                if (srcName in ref.dataset) {
+                    const key = ref.dataset[srcName]
+                    const currentCustomStyleRef = getCustomStyleRef(key);
+                    if (currentCustomStyleRef)
+                        console.warn(`custom-style-src="${key} is already declared."\nPlease use different value.`)
+
+                    isRef = true;
+                    customStylesReferences.push({ key: key, value: newCssClassName })
+                }
+
+                let isCopy = false;
+                if (refName in ref.dataset) {
+                    const key = ref.dataset[refName]
+                    const currentCustomStyleRef = getCustomStyleRef(key);
+                    console.log(currentCustomStyleRef);
+                    if (currentCustomStyleRef)
+                        ref.classList.add(currentCustomStyleRef.value);
+
                     isCopy = true;
+                }
+
+                //handaling pseudo elements
+                const pseudoUpdates = updatePseudoRefencesInCSS(attributeValue)
+                const pseudoObjects = pseudoUpdates.pseudoProperties;
+                for (let j = 0; j < pseudoObjects.length; j++) {
+                    customStyleSheet.sheet.insertRule(
+                        getNewCssClass(`${newCssClassName}${pseudoObjects[j].pseudo}`, updateRefrencesInCSS(pseudoObjects[j].properties)),
+                        customStyleSheet.sheet.cssRules.length)
+                }
+
+                //inserting the main rule
+                customStyleSheet.sheet.insertRule(
+                    getNewCssClass(newCssClassName, updateRefrencesInCSS(pseudoUpdates.newCss)),
+                    customStyleSheet.sheet.cssRules.length)
+
+                ref.removeAttribute(attributeName)
+                ref.classList.add(newCssClassName)
+
+
+                if (isRef)
+                    ref.removeAttribute(srcAttributeName)
+                if (isCopy)
+                    ref.removeAttribute(refAttributeName);
             }
-  
-            //handaling pseudo elements
-            const pseudoUpdates = updatePseudoRefencesInCSS(attributeValue)
-            const pseudoObjects = pseudoUpdates.pseudoProperties;
-            for (let j = 0; j < pseudoObjects.length; j++){
-              customStyleSheet.sheet.insertRule(
-                getNewCssClass(`${newCssClassName}${pseudoObjects[j].pseudo}`, updateRefrencesInCSS(pseudoObjects[j].properties)),
-                customStyleSheet.sheet.cssRules.length)
-              }
-              
-              //inserting the main rule
-            customStyleSheet.sheet.insertRule(
-                getNewCssClass(newCssClassName, updateRefrencesInCSS(pseudoUpdates.newCss)),
-                customStyleSheet.sheet.cssRules.length)
-  
-            elements[i].removeAttribute(attributeName)
-            elements[i].classList.add(newCssClassName)
-            
-  
-            if (isRef)
-                elements[i].removeAttribute(srcAttributeName)
-            if(isCopy)
-                elements[i].removeAttribute(refAttributeName);
-        }
-  
-        //handaling custom-style-refs
-        const referenceElements = document.querySelectorAll(`[${refAttributeName}]`)
-        for (let i = 0; i < referenceElements.length; i++) {
-            const customStyleRef = referenceElements[i].dataset[refName]
-            const customStyle = getCustomStyleRef(customStyleRef)
-            if (!customStyle) {
-                console.warn(`custom-style-ref="${customStyleRef}" is not defined.\nTry adding it to the refered element.\nAnd check that it uses a custom-style attribute.`)
-                return
+
+            const referenceElements = document.querySelectorAll(`[${refAttributeName}]`)
+            for (let i = 0; i < referenceElements.length; i++) {
+                const customStyleRef = referenceElements[i].dataset[refName]
+                const customStyle = getCustomStyleRef(customStyleRef)
+                if (!customStyle) {
+                    //    console.warn(`custom-style-ref="${customStyleRef}" is not defined.\nTry adding it to the refered element.\nAnd check that it uses a custom-style attribute.`)
+                    return
+                }
+                referenceElements[i].classList.add(customStyle.value)
+                referenceElements[i].removeAttribute(refAttributeName)
             }
-            referenceElements[i].classList.add(customStyle.value)
-            referenceElements[i].removeAttribute(refAttributeName)
         }
-  
-        return customStyleSheet
-    })()
-  }
+
+        return refs;
+    }
+
+    return [refHandler]
+
+}
 ```
 
 2. Insert into 'App.jsx' (copy & paste):
 
 ```jsx
 //...
-import { useCustomStyles } from 'your/path/to/useCustomStyles.jsx';//importing the hook
+import { useCustomStylesheet } from 'your/path/to/useCustomStyles.jsx';//importing the hook
 //...
-useCustomStyles();//using the hook (at the top of App functions body)
+useCustomStylesheet();//using the hook (at the top of App functions body)
 //...
 ```
 
@@ -298,25 +285,35 @@ useCustomStyles();//using the hook (at the top of App functions body)
   // its possible to use 'data-style-ref' and override some of the styles with 'data-style'
 
 
+import React, { useEffect, useRef, useState } from "react";
+import { useCustomStylesRef } from "your/path/to/useCustomStyles.jsx";
+
 export const Home = () => {
     const colors = ["green", "yellow", "red", "blue", "orange"];
     const lines = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    const [customStyleHandler] = useCustomStylesRef();
+
+
     return (
         <>
-            {
-            //<div ref={ref} className={styles.comp}>lalalala</div>
-
-            //<div className={styles.comp}>lalalala</div>
-            }
+            <div ref={customStyleHandler}
+            data-style-src="test1"
+            data-style="
+                color:blue;
+                ~:hover{
+                    color:white
+                }
+                ">Laaaaaaaaa</div>
 
             Inline styles
             {lines.map((line, index) => {
                 return (
                     <div
                         key={index}
-                        style={{ 
-                        backgroundColor: colors[index % colors.length], 
-                        color: colors[(index + 1) % colors.length]}}>
+                        style={{
+                            backgroundColor: colors[index % colors.length],
+                            color: colors[(index + 1) % colors.length]
+                        }}>
                         {line}
                     </div>
                 )
@@ -325,18 +322,20 @@ export const Home = () => {
             Custom styles
             {lines.map((line, index) => {
                 return (
-                <div
-                    key={index + lines.length}
-                    data-style={`
+                    <div
+                        ref={customStyleHandler}
+                        key={index + lines.length}
+                        data-style={`
                     background-color: ${colors[index % colors.length]};
                     color:${colors[(index + 1) % colors.length]};`}>
-                    {line}
-                </div>)
+                        {line}
+                    </div>)
             })}
 
             Custom style ref & src
             <div
-                data-style-src="test"
+                ref={customStyleHandler}
+                data-style-src="test4"
                 data-style="
                 color:blue;
                 ~:hover{
@@ -347,18 +346,21 @@ export const Home = () => {
             </div>
 
             <div
-                data-style-ref="test">
+                ref={customStyleHandler}
+                data-style-ref="test4">
                 hello2
             </div>
 
             <div
-                data-style-ref="test"
+                ref={customStyleHandler}
+                data-style-ref="test4"
                 data-style="color:green;">
                 hello3
             </div>
 
             <div
-                data-style-ref="test"
+                ref={customStyleHandler}
+                data-style-ref="test4"
                 data-style="~:hover{
                     color:pink;
                     }">
@@ -366,7 +368,8 @@ export const Home = () => {
             </div>
 
             <div
-                data-style-ref="test"
+                ref={customStyleHandler}
+                data-style-ref="test4"
                 data-style="
                 @media screen and (max-width: 600px){
                     font-size: 30px;
